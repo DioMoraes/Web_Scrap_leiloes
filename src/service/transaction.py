@@ -7,16 +7,16 @@ async def get_field_value(page, field_name):
     field_name: "Monta", "Origem", "KM", etc. (inclui automaticamente os ":")
     """
     try:
-        # Primeiro tentamos pegar o elemento PAI que contém tanto o label quanto o valor
+        
         parent_locator = page.locator(f"text=/{field_name}:/i >> xpath=..")
         
         if await parent_locator.count() > 0:
-            # Pega todo o texto do elemento pai e extrai apenas o valor
+            
             full_text = await parent_locator.first.text_content()
             value = full_text.split(f"{field_name}:")[-1].strip()
             return value if value else None
         
-        # Fallback: procura pelo texto exato e pega o próximo elemento
+       
         label_locator = page.locator(f"text=/{field_name}:/i").first
         if await label_locator.count() > 0:
             value_locator = label_locator.locator("xpath=following-sibling::*[1]")
@@ -34,7 +34,7 @@ def fetch_data_fipe(lines):
     with open("fipe/marks.json", "r") as f:
         json_marcas = json.load(f)
 
-    # Cria um dicionário com nome -> código
+  
     dict_marks = {marca["nome"].lower(): marca["codigo"] for marca in json_marcas}
 
     result = []
@@ -51,7 +51,7 @@ def fetch_data_fipe(lines):
         ano = None
 
         if parts:
-            # Pega a primeira palavra após remover o prefixo '-'
+           
             first_word = parts[0].lstrip('-')
             if first_word == "chevrolet":
                 first_word = "gm - chevrolet"
@@ -59,20 +59,20 @@ def fetch_data_fipe(lines):
                 first_word = "vw - volkswagen"    
             if first_word in dict_marks:
                 marca = first_word
-                remaining_parts = parts[1:] # O resto são modelo e ano
-            # Adiciona uma lógica para tentar encontrar marcas de duas palavras
+                remaining_parts = parts[1:] 
+        
             elif len(parts) > 1:
                 potential_mark_two_words = " ".join(parts[:2]).lstrip('-')
                 if potential_mark_two_words in dict_marks:
                     marca = potential_mark_two_words
                     remaining_parts = parts[2:]
                 else:
-                    remaining_parts = parts[1:] # Se não for marca de duas palavras, o resto começa da segunda palavra
+                    remaining_parts = parts[1:]
             else:
                 remaining_parts = []
 
             if marca:
-                # Tenta encontrar o modelo e ano no restante das partes
+               
                 ano_pattern = re.compile(r'\b(20\d{2})\b')
                 anos_encontrados = ano_pattern.findall(" ".join(remaining_parts))
 
@@ -130,7 +130,7 @@ async def get_fipe_codes(vehicles):
 
                 modelo_codigo = melhor_match_codigo
 
-                # Busca pelo código do ano
+        
                 anos = marca_info.get("anos", [])
                 for ano_info in anos:
                     ano_nome_parts = ano_info.get("nome", "").split()

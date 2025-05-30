@@ -1,16 +1,16 @@
 import re
 from playwright.async_api import async_playwright
 import pandas as pd
-from transaction import get_field_value
+from src.service.transaction import get_field_value
 
 async def get_verified_text(page, main_selector, verification_text=None, parent_level=1):
     try:
-        # Primeiro tenta encontrar pelo seletor principal
+       
         locator = page.locator(main_selector).first
         if not await locator.count():
             return None
             
-        # Se fornecido um texto de verificação, confirma no elemento pai
+      
         if verification_text:
             parent = locator
             for _ in range(parent_level):
@@ -36,22 +36,21 @@ async def run_urls(urls):
             await page.wait_for_load_state("networkidle")
             
             try:
-                 # Lote
+             
                 lote = await page.locator("xpath=//*[@id='content']/div/div[2]/div/div[2]/div/div[1]/div/div[2]/div[3]/h1").text_content()
                 
-                # KM
+             
                 km_locator = page.locator("text=KM >> xpath=..")
                 km_element = await km_locator.text_content()
                 km = km_element.replace("KM", "").strip() if km_element else None
-                
-                # Origem - com verificações
+           
                 origem = await get_field_value(page,'origem')
                 
                 
-                # Monta
+           
                 monta = await get_field_value(page, "Monta")
                 
-                # Observações - com fallback
+            
                 obs = await get_verified_text(
                     page,
                     "text=Observações >> xpath=following::p[1]",
@@ -62,7 +61,7 @@ async def run_urls(urls):
                     "Obs."
                 )
                 
-                # Lance Atual/Inicial - estratégia reforçada
+             
                 lance_atual = None
                 bid_boxes = [
                     "div[style*='background-color: rgb(0, 129, 119)']",

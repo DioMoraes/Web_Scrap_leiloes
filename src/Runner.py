@@ -1,11 +1,23 @@
 import asyncio
 from playwright.sync_api import sync_playwright
+import logging
 from pathlib import Path
-from process_page import run_urls 
 from datetime import date
 import pandas as pd
-from transaction import get_payloead
-import sys
+import os, sys
+# Add project root to the system path
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        os.pardir
+    )
+)
+sys.path.append(PROJECT_ROOT)
+
+
+
+from src.service.process_page import run_urls 
+from src.service.transaction import get_payloead
 
 
 today = date.today()
@@ -14,6 +26,7 @@ URLS_FILE = f"captured_urls_{today}.txt"
 def fetch_url():
     """Captura URLs dos lotes e grava em arquivo texto, parando quando encontrar repetições"""
     url_base = "https://www.pestanaleiloes.com.br/procurar-bens?tipoBem=421&localizacao=Tijucas"
+    logging.info( f"Capturando URLs da URL base: {url_base}" )
     
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -101,6 +114,7 @@ async def get_full_table(table_path):
 
 async def get_full_table_fipe(table_path):
     """Processa as URLs lidas do arquivo"""
+    logging.info( f"Capturando URLs da URL base: {table_path}")
 
     df = pd.read_excel(table_path)
     df = df.iloc[1:]
@@ -141,7 +155,7 @@ def main():
         elif choice == "4":
             break
         elif choice == "3":
-            asyncio.run(get_full_table_fipe("dados_seguros.xlsx"))
+            asyncio.run(get_full_table_fipe("dados_capturados.xlsx"))
         else:
             print("Opção inválida. Tente novamente.")
 
