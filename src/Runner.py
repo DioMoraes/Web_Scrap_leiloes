@@ -21,7 +21,7 @@ from src.service.transaction import get_payloead
 
 
 today = date.today()
-URLS_FILE = f"captured_urls_{today}.txt"
+URLS_FILE = f"captured_urls.txt"
 
 def fetch_url():
     """Captura URLs dos lotes e grava em arquivo texto, parando quando encontrar repetições"""
@@ -98,7 +98,7 @@ def read_url_from_file():
     
     return urls
 
-async def get_full_table(table_path):
+async def get_full_table():
     """Processa as URLs lidas do arquivo"""
     
     
@@ -150,8 +150,8 @@ def main():
         if choice == "1":
             fetch_url()
         elif choice == "2":
-            urls = input("\nDigite nome do txt com as urls")
-            asyncio.run(get_full_table(f"{urls}.txt"))
+
+            asyncio.run(get_full_table())
         elif choice == "4":
             break
         elif choice == "3":

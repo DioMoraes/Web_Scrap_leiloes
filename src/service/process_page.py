@@ -1,7 +1,20 @@
-import re
+import re, os, sys
+PROJECT_ROOT = os.path.abspath(os.path.join(
+                  os.path.dirname(__file__), 
+                  os.pardir)
+)
+sys.path.append(PROJECT_ROOT)
 from playwright.async_api import async_playwright
 import pandas as pd
 from src.service.transaction import get_field_value
+
+
+
+RESULT_DIR = os.path.join(os.path.abspath(
+    os.path.join(os.path.dirname(__file__), os.pardir, os.pardir)), "result")
+
+
+os.makedirs(RESULT_DIR, exist_ok=True)
 
 async def get_verified_text(page, main_selector, verification_text=None, parent_level=1):
     try:
@@ -96,8 +109,9 @@ async def run_urls(urls):
                 continue
 
         df = pd.DataFrame(all_data)
-        df.to_excel('dados_seguros.xlsx', index=False)
-
+        file_path = os.path.join(RESULT_DIR, "dados_seguros.xlsx")
+        df.to_excel(file_path, index=False)
+        print(f"Arquivo salvo em {file_path}")
         await browser.close()
 
 # Exemplo de uso
