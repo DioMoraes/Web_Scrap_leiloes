@@ -161,3 +161,10 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+def run():
+    try:
+        fetch_url()
+        asyncio.run(get_full_table())
+    except Exception as e:
+        print(f"Erro ao executar o script: {str(e)}")
