@@ -25,8 +25,8 @@ Este projeto tem como objetivo coletar dados de um site de leilões de veículos
 ## Tecnologias
 
 - Python 3.x
-- Bibliotecas: `requests`, `BeautifulSoup`, `pandas` (e outras para scraping e análise)
-- Planejamento para automação com cron jobs ou agendamento via `schedule`
+- Bibliotecas: `requests`, `playwright`, `pandas` (e outras para scraping e análise)
+
 
 ---
 
